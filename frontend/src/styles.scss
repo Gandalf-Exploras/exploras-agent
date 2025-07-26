@@ -1,0 +1,58 @@
+/* Global Styles */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+html, body { 
+  height: 100%; 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+/* Exploras Theme */
+:root {
+  --primary-blue: #2196F3;
+  --primary-orange: #FF9800;
+  --light-gray: #f5f5f5;
+  --dark-gray: #333;
+}
+
+/* Custom Material Theme Override */
+.mat-toolbar.mat-primary {
+  background: linear-gradient(90deg, var(--primary-blue) 0%, var(--primary-orange) 100%);
+}
+
+.mat-button.mat-primary, .mat-raised-button.mat-primary {
+  background-color: var(--primary-blue);
+}
+
+.mat-button.mat-accent, .mat-raised-button.mat-accent {
+  background-color: var(--primary-orange);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Utility classes */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.p-1 { padding: 8px; }
+.p-2 { padding: 16px; }
