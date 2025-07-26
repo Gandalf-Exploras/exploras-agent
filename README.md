@@ -1,9 +1,7 @@
 # exploras-agent
-AI-powered agent for generating blog posts from user questions based on Exploring Cloud-Native Ecosystems. Integrates with WordPress to publish structured content. Powered by OldBirba, AI Assistant of Gandalf. Licensed under AGPLv3.
-# exploras-cloud-agent
 
 ✳️ A generative content agent for the [Exploring Cloud-Native Ecosystems](https://www.exploras.cloud) project.
-
+AI-powered agent for generating blog posts from user questions based on Exploring Cloud-Native Ecosystems. Integrates with WordPress to publish structured content. 
 This AI-powered agent transforms user questions into structured blog articles, drawing insights from the book *Exploring Cloud-Native Ecosystems*. It integrates with WordPress to publish content automatically via API.
 
 ---
