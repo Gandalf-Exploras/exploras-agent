@@ -1,36 +1,32 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Virtual environment
-.venv/
+*.so
+.Python
 env/
 venv/
+.venv/
 
-# Environment variables / secrets
-.env
-.env.*
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
 *.log
 
-# VS Code / IDE settings
-.vscode/
-.idea/
+# Environment variables
+.env
+.env.local
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Python cache
-*.pyc
-
-# Output or build artifacts
-output/
-dist/
-*.html
+# Ignore markdown files by default
 *.md
 
-# Jupyter or notebooks (if used)
-.ipynb_checkpoints/
+# But allow specific .github files
+!.github/**/*.md
+!README.md
+!LICENSE
