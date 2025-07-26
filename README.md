@@ -40,13 +40,12 @@ This is an experimental prototype to validate:
 
 #### Option 1: PowerShell Script (Windows)
 ```powershell
-./start.ps1
+./scripts/docker-compose/start.ps1
 ```
 
 #### Option 2: Bash Script (Linux/Mac/WSL)
 ```bash
-chmod +x start.sh
-./start.sh
+./scripts/docker-compose/start.sh
 ```
 
 #### Option 3: Make Commands
@@ -97,6 +96,20 @@ microk8s status
 ```
 
 #### Build and Deploy
+
+##### Option 1: Automated Scripts (Recommended)
+```bash
+# Deploy everything at once
+./scripts/kubernetes/deploy-all.sh        # Linux/Mac/WSL
+# or
+scripts\kubernetes\deploy-all.bat         # Windows
+
+# Deploy individual components
+./scripts/kubernetes/deploy-backend.sh    # Backend only
+./scripts/kubernetes/deploy-frontend.sh   # Frontend only
+```
+
+##### Option 2: Manual Commands
 ```bash
 # Build backend image
 sudo docker build -t localhost:32000/exploras-backend:latest backend/
@@ -201,9 +214,21 @@ exploras-agent/
 ├── ebook/                  # EPUB files
 ├── samples/                # Utility scripts
 ├── plugin/                 # Integration plugins
+├── scripts/                # Deployment automation scripts
+│   ├── docker-compose/     # Docker Compose scripts (development)
+│   │   ├── start.sh        # Linux/Mac/WSL startup script
+│   │   ├── start.ps1       # Windows startup script
+│   │   └── README.md       # Docker Compose documentation
+│   ├── kubernetes/         # Kubernetes scripts (production)
+│   │   ├── deploy-all.sh   # Complete deployment (Linux/Mac/WSL)
+│   │   ├── deploy-all.bat  # Complete deployment (Windows)
+│   │   ├── deploy-backend.sh   # Backend deployment (Linux/Mac/WSL)
+│   │   ├── deploy-backend.bat  # Backend deployment (Windows)
+│   │   ├── deploy-frontend.sh  # Frontend deployment (Linux/Mac/WSL)
+│   │   ├── deploy-frontend.bat # Frontend deployment (Windows)
+│   │   └── README.md       # Kubernetes documentation
+│   └── README.md           # Scripts overview
 ├── docker-compose.yml      # Service orchestration
-├── start.ps1              # Windows startup script
-├── start.sh               # Linux/Mac startup script
 └── Makefile               # Make commands
 ```
 
