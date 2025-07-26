@@ -219,7 +219,7 @@ To redeploy after code changes:
 
 # Or redeploy individual components
 ./scripts/kubernetes/deploy-backend.sh    # After backend changes
-./scripts/deploy-frontend.sh   # After frontend changes
+./scripts/kubernetes/deploy-frontend.sh   # After frontend changes
 ```
 
 ## 🧹 Cleanup
