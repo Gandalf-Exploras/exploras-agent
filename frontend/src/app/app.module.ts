@@ -5,6 +5,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+// Markdown
+import { MarkdownModule } from 'ngx-markdown';
+
 // Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
@@ -31,6 +34,7 @@ import { EpubExplorerComponent } from './epub-explorer.component';
     HttpClientModule,
     FormsModule,
     FlexLayoutModule,
+    MarkdownModule.forRoot(),
     
     // Angular Material
     MatToolbarModule,

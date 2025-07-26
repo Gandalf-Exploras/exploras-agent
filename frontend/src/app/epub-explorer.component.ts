@@ -95,12 +95,12 @@ interface AnswerResponse {
               <div *ngIf="currentAnswer" class="answer-section">
                 <mat-divider></mat-divider>
                 <h3>Answer</h3>
-                <div class="answer-content" [innerHTML]="currentAnswer.answer | markdown"></div>
+                <div class="answer-content" markdown [data]="currentAnswer.answer"></div>
                 <div class="answer-meta">
-                  <mat-chip-list>
+                  <mat-chip-set>
                     <mat-chip>Context: {{currentAnswer.context_length}} chars</mat-chip>
                     <mat-chip>Section: {{currentAnswer.toc_title}}</mat-chip>
-                  </mat-chip-list>
+                  </mat-chip-set>
                 </div>
               </div>
 

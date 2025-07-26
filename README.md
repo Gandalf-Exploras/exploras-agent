@@ -11,24 +11,26 @@ This is an experimental prototype to validate:
 - **UX Workflow**: Interactive TOC selection → Targeted Q&A
 - **Architecture**: FastAPI backend + Angular frontend with Material Design
 
-## 🐳 Quick Start with Docker
+## � Deployment Options
 
-### Prerequisites
+### 🐳 Docker Compose (Simple Development)
+
+#### Prerequisites
 - Docker Desktop installed
 - Git (to clone the repository)
 
-### Option 1: PowerShell Script (Windows)
+#### Option 1: PowerShell Script (Windows)
 ```powershell
 ./start.ps1
 ```
 
-### Option 2: Bash Script (Linux/Mac/WSL)
+#### Option 2: Bash Script (Linux/Mac/WSL)
 ```bash
 chmod +x start.sh
 ./start.sh
 ```
 
-### Option 3: Make Commands
+#### Option 3: Make Commands
 ```bash
 make start        # Build and start all services
 make status       # Check container status
@@ -37,7 +39,7 @@ make down         # Stop services
 make clean        # Complete cleanup
 ```
 
-### Option 4: Manual Docker Compose
+#### Option 4: Manual Docker Compose
 ```bash
 # Build and start
 docker-compose up --build -d
@@ -52,15 +54,80 @@ docker-compose logs -f
 docker-compose down
 ```
 
+### ☸️ Kubernetes with MicroK8s (Production-Ready)
+
+#### Prerequisites
+- Ubuntu 24.04 (or WSL2 with Ubuntu)
+- MicroK8s installed and configured
+
+#### Setup MicroK8s
+```bash
+# Install MicroK8s
+sudo snap install microk8s --classic
+
+# Add user to microk8s group
+sudo usermod -a -G microk8s $USER
+sudo chown -f -R $USER ~/.kube
+newgrp microk8s
+
+# Enable required addons
+microk8s enable registry storage ingress
+
+# Verify installation
+microk8s status
+```
+
+#### Build and Deploy
+```bash
+# Build backend image
+sudo docker build -t localhost:32000/exploras-backend:latest backend/
+sudo docker push localhost:32000/exploras-backend:latest
+
+# Build frontend image
+sudo docker build -t localhost:32000/exploras-frontend:latest frontend/
+sudo docker push localhost:32000/exploras-frontend:latest
+
+# Deploy to Kubernetes
+microk8s kubectl apply -f k8s/backend.yaml
+microk8s kubectl apply -f k8s/frontend.yaml
+microk8s kubectl apply -f k8s/ingress.yaml
+
+# Check deployment status
+microk8s kubectl get pods
+microk8s kubectl get services
+microk8s kubectl get ingress
+```
+
+#### Access Application (Kubernetes)
+```bash
+# Option 1: Port-forward (temporary access)
+microk8s kubectl port-forward service/exploras-frontend-service 8080:80
+
+# Then visit http://localhost:8080
+
+# Option 2: Ingress (permanent access)
+# Add to /etc/hosts (Linux/Mac) or C:\Windows\System32\drivers\etc\hosts (Windows):
+# 127.0.0.1 exploras.local
+# Then visit http://exploras.local
+```
+
 ## 🌐 Access the Application
 
+### Docker Compose
 After starting the containers:
 - **Frontend**: http://localhost
 - **Backend API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/docs
 
-## 🏗️ Container Architecture
+### Kubernetes (MicroK8s)
+After deploying to Kubernetes:
+- **Frontend**: http://localhost:8080 (via port-forward) or http://exploras.local (via ingress)
+- **Backend API**: Accessible internally to frontend via `exploras-backend-service:8000`
+- **API Docs**: http://exploras.local/api/docs (via frontend proxy)
 
+## 🏗️ Architecture
+
+### Docker Compose (Development)
 ```
 ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │    Backend      │
@@ -69,6 +136,26 @@ After starting the containers:
 │   Nginx         │    │   Python        │
 │   Port: 80      │    │   Port: 8000    │
 └─────────────────┘    └─────────────────┘
+```
+
+### Kubernetes (Production)
+```
+┌─────────────────────────┐
+│      Ingress            │
+│   (exploras.local)      │
+└──────────┬──────────────┘
+           │
+┌──────────▼──────────────┐    ┌─────────────────────────┐
+│   Frontend Service      │    │   Backend Service       │
+│   (exploras-frontend-   │◄──►│   (exploras-backend-    │
+│    service:80)          │    │    service:8000)        │
+└──────────┬──────────────┘    └──────────┬──────────────┘
+           │                              │
+┌──────────▼──────────────┐    ┌──────────▼──────────────┐
+│   Frontend Pod          │    │   Backend Pod           │
+│   Angular + Nginx       │    │   FastAPI + Python      │
+│   (Containerized)       │    │   (Containerized)       │
+└─────────────────────────┘    └─────────────────────────┘
 ```
 
 ## 📁 Project Structure
@@ -84,6 +171,14 @@ exploras-agent/
 │   ├── package.json        # Node dependencies
 │   ├── Dockerfile          # Frontend container
 │   └── nginx.conf          # Nginx configuration
+├── k8s/                    # Kubernetes manifests
+│   ├── backend.yaml        # Backend deployment & service
+│   ├── frontend.yaml       # Frontend deployment & service
+│   ├── ingress.yaml        # Ingress configuration
+│   ├── configmap.yaml      # Configuration maps
+│   ├── deploy.sh           # Deployment script
+│   ├── cleanup.sh          # Cleanup script
+│   └── Makefile           # Kubernetes commands
 ├── ebook/                  # EPUB files
 ├── samples/                # Utility scripts
 ├── plugin/                 # Integration plugins
@@ -102,7 +197,7 @@ cd backend
 pip install -r requirements.txt
 python main.py
 
-# Frontend (requires Node.js)
+# Frontend (requires Node.js 18+)
 cd frontend
 npm install
 ng serve
@@ -110,21 +205,71 @@ ng serve
 
 ### Development with Docker
 ```bash
+# Docker Compose development
 make dev  # Auto-rebuild on changes
+
+# Kubernetes development
+cd k8s
+make build-dev    # Build development images
+make deploy-dev   # Deploy to MicroK8s
+make logs         # View pod logs
+```
+
+### Troubleshooting
+
+#### Docker Issues
+```bash
+# Check container logs
+docker-compose logs backend
+docker-compose logs frontend
+
+# Rebuild containers
+docker-compose up --build --force-recreate
+```
+
+#### Kubernetes Issues
+```bash
+# Check pod status
+microk8s kubectl get pods -o wide
+
+# Check pod logs
+microk8s kubectl logs <pod-name>
+
+# Check services
+microk8s kubectl get services
+
+# Debug pod connectivity
+microk8s kubectl exec -it <frontend-pod> -- wget -q -O - http://exploras-backend-service:8000/health
 ```
 
 ## 🧪 Testing the API
 
-### Get Table of Contents
+### Docker Compose
 ```bash
+# Get Table of Contents
 curl http://localhost:8000/toc
-```
 
-### Ask a Question
-```bash
+# Ask a Question
 curl -X POST -H "Content-Type: application/json" \
   -d '{"toc_id":"toc_0_0","question":"What is this chapter about?"}' \
   http://localhost:8000/question
+```
+
+### Kubernetes
+```bash
+# Port-forward to backend (for direct API testing)
+microk8s kubectl port-forward service/exploras-backend-service 8001:8000
+
+# Get Table of Contents
+curl http://localhost:8001/toc
+
+# Ask a Question
+curl -X POST -H "Content-Type: application/json" \
+  -d '{"toc_id":"toc_0_0","question":"What is this chapter about?"}' \
+  http://localhost:8001/question
+
+# Test via frontend proxy (when frontend is port-forwarded to 8080)
+curl http://localhost:8080/api/toc
 ```
 
 ## 🎨 Features
@@ -133,9 +278,11 @@ curl -X POST -H "Content-Type: application/json" \
 - **Material Design**: Blue/orange Exploras theme
 - **TOC Tree**: Interactive chapter/section selection
 - **Q&A Interface**: Context-aware responses with metadata
-- **Docker Ready**: Complete containerized deployment
+- **Multi-Platform Deployment**: Docker Compose + Kubernetes support
+- **Production Ready**: MicroK8s deployment with ingress and service mesh
 - **API Documentation**: Auto-generated with FastAPI
 - **Responsive UI**: Works on desktop and mobile
+- **Container Orchestration**: Full Kubernetes manifests with deployments, services, and ingress
 
 ## 📝 Current Status
 
@@ -144,12 +291,16 @@ curl -X POST -H "Content-Type: application/json" \
 - FastAPI backend with /toc and /question endpoints
 - Angular frontend with Material Design
 - Docker containerization with Nginx proxy
+- Kubernetes deployment on MicroK8s
+- Service mesh with internal DNS resolution
+- Ingress controller for external access
 - Cost-optimized content selection
 
 🔄 **In Progress:**
 - OpenAI integration (currently using mock responses)
 - Enhanced UI components
 - Authentication system
+- Monitoring and logging integration
 
 ## 🤝 How it Works
 

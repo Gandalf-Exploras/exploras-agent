@@ -7,14 +7,14 @@ WORKDIR /app
 # Copia package.json e package-lock.json
 COPY package*.json ./
 
-# Installa le dipendenze
-RUN npm ci --only=production
+# Installa tutte le dipendenze e Angular CLI globalmente
+RUN npm install && npm install -g @angular/cli
 
 # Copia il codice sorgente
 COPY . .
 
 # Build dell'applicazione Angular per produzione
-RUN npm run build --prod
+RUN ng build --configuration production
 
 # Stage 2: Serve con Nginx
 FROM nginx:alpine
