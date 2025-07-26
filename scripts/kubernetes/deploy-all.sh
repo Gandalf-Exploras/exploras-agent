@@ -43,10 +43,18 @@ echo "✅ Frontend image pushed successfully"
 echo
 echo "[5/6] Deploying all services to Kubernetes..."
 microk8s kubectl apply -f k8s/backend.yaml
+if [ $? -ne 0 ]; then
+    echo "ERROR: Failed to deploy backend to Kubernetes"
+    exit 1
+fi
 microk8s kubectl apply -f k8s/frontend.yaml
+if [ $? -ne 0 ]; then
+    echo "ERROR: Failed to deploy frontend to Kubernetes"
+    exit 1
+fi
 microk8s kubectl apply -f k8s/ingress.yaml
 if [ $? -ne 0 ]; then
-    echo "ERROR: Failed to deploy to Kubernetes"
+    echo "ERROR: Failed to deploy ingress to Kubernetes"
     exit 1
 fi
 echo "✅ All services deployed successfully"
