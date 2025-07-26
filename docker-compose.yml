@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Backend FastAPI
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: exploras-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ebook:/app/ebooks:ro  # Mount della directory ebook
+      - ./backend:/app:rw       # Mount per development (opzionale)
+    environment:
+      - PYTHONPATH=/app
+      - EPUB_PATH=/app/ebooks/Cloud-Native Ecosystems - Mauro Giuliano.epub
+    networks:
+      - exploras-network
+    restart: unless-stopped
+
+  # Frontend Angular + Nginx
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: exploras-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - exploras-network
+    restart: unless-stopped
+
+networks:
+  exploras-network:
+    driver: bridge
+
+volumes:
+  epub-data:
