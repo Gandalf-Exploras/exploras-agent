@@ -2,7 +2,7 @@
 
 This directory contains automated deployment scripts for the Exploras Agent application across different environments.
 
-## � Directory Structure
+## 📁 Directory Structure
 
 ```
 scripts/
