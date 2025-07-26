@@ -215,7 +215,7 @@ To redeploy after code changes:
 
 ```bash
 # Quick redeploy (rebuilds and redeploys everything)
-./scripts/deploy-all.sh
+./scripts/kubernetes/deploy-all.sh
 
 # Or redeploy individual components
 ./scripts/deploy-backend.sh    # After backend changes
